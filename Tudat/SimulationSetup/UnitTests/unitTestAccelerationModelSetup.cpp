@@ -1,4 +1,4 @@
-/*    Copyright (c) 2010-2017, Delft University of Technology
+/*    Copyright (c) 2010-2018, Delft University of Technology
  *    All rigths reserved
  *
  *    This file is part of the Tudat. Redistribution and use in source and
@@ -50,8 +50,7 @@ BOOST_AUTO_TEST_SUITE( test_acceleration_model_setup )
 BOOST_AUTO_TEST_CASE( test_centralGravityModelSetup )
 {
     // Load Spice kernel with gravitational parameters.
-    const std::string kernelsPath = input_output::getSpiceKernelPath( );
-    spice_interface::loadSpiceKernelInTudat( kernelsPath + "de-403-masses.tpc" );
+    spice_interface::loadStandardSpiceKernels( );
 
     // Create bodies with gravitational parameters from Spice and JPL approximane positions
     // as ephemerides
@@ -191,7 +190,7 @@ BOOST_AUTO_TEST_CASE( test_shGravityModelSetup )
 
     // Set constant state for Earth and Vehicle
     Eigen::Vector6d dummyEarthState =
-            ( Eigen::Vector6d ( ) << 1.1E11, 0.5E11, 0.01E11, 0.0
+            ( Eigen::Vector6d ( ) << 1.1E11, 0.5E11, 0.01E11, 0.0, 0.0, 0.0
               ).finished( );
     bodyMap[ "Earth" ]->setState( dummyEarthState );
     bodyMap[ "Vehicle" ]->setState(
@@ -295,9 +294,7 @@ BOOST_AUTO_TEST_CASE( test_radiationPressureAcceleration )
     using namespace tudat;
 
     // Load Spice kernels
-    spice_interface::loadSpiceKernelInTudat( input_output::getSpiceKernelPath( ) + "pck00009.tpc" );
-    spice_interface::loadSpiceKernelInTudat( input_output::getSpiceKernelPath( ) + "de-403-masses.tpc" );
-    spice_interface::loadSpiceKernelInTudat( input_output::getSpiceKernelPath( ) + "de421.bsp" );
+    spice_interface::loadStandardSpiceKernels( );
 
     // Get settings for celestial bodies
     std::map< std::string, boost::shared_ptr< BodySettings > > bodySettings;
@@ -362,7 +359,7 @@ BOOST_AUTO_TEST_CASE( test_radiationPressureAcceleration )
 
     // Compare results
     TUDAT_CHECK_MATRIX_CLOSE_FRACTION(
-                expectedAcceleration, calculatedAcceleration, ( std::numeric_limits< double >::epsilon( ) ) );
+                expectedAcceleration, calculatedAcceleration, ( 2.0 * std::numeric_limits< double >::epsilon( ) ) );
 
 
 }
@@ -374,9 +371,7 @@ BOOST_AUTO_TEST_CASE( test_aerodynamicAccelerationModelSetup )
     using namespace tudat;
 
     // Load Spice kernels
-    spice_interface::loadSpiceKernelInTudat( input_output::getSpiceKernelPath( ) + "pck00009.tpc" );
-    spice_interface::loadSpiceKernelInTudat( input_output::getSpiceKernelPath( ) + "de-403-masses.tpc" );
-    spice_interface::loadSpiceKernelInTudat( input_output::getSpiceKernelPath( ) + "de421.bsp" );
+    spice_interface::loadStandardSpiceKernels( );
 
     // Test creation with coefficients positive/negative in body/aerodynamic frame (4 cases).
     for( unsigned int testCase = 0; testCase < 4; testCase++ )
@@ -388,7 +383,7 @@ BOOST_AUTO_TEST_CASE( test_aerodynamicAccelerationModelSetup )
 
         // Define (arbitrary) aerodynamic coefficient settings.
         Eigen::Vector3d aerodynamicCoefficients =
-                ( Eigen::Vector3d( )<<1.0, 3.0, -2.0 ).finished( );
+                ( Eigen::Vector3d( ) << 1.0, 3.0, -2.0 ).finished( );
         double referenceArea = 4.7;
 
         // Get coefficient settings for current test case
@@ -454,7 +449,7 @@ BOOST_AUTO_TEST_CASE( test_aerodynamicAccelerationModelSetup )
 
         // Set vehicle body-fixed state (see testAerodynamicAngleCalculator)
         Eigen::Vector6d vehicleBodyFixedState =
-                ( Eigen::Vector6d( )<< -1656517.23153109, -5790058.28764025, -2440584.88186829,
+                ( Eigen::Vector6d( ) << -1656517.23153109, -5790058.28764025, -2440584.88186829,
                   6526.30784888051, -2661.34558272018, 2377.09572383163 ).finished( );
 
         double testTime = 0.5E7;
@@ -551,7 +546,7 @@ BOOST_AUTO_TEST_CASE( test_aerodynamicAccelerationModelSetup )
 
         // Compare results
         TUDAT_CHECK_MATRIX_CLOSE_FRACTION(
-                    expectedAerodynamicForce, computedAerodynamicForce, ( 5.0 *  std::numeric_limits< double >::epsilon( ) ) );
+                    expectedAerodynamicForce, computedAerodynamicForce, ( 10.0 *  std::numeric_limits< double >::epsilon( ) ) );
     }
 }
 
@@ -562,10 +557,7 @@ BOOST_AUTO_TEST_CASE( test_aerodynamicAccelerationModelSetupWithCoefficientIndep
     using namespace tudat;
 
     // Load Spice kernels
-    spice_interface::loadSpiceKernelInTudat( input_output::getSpiceKernelPath( ) + "pck00009.tpc" );
-    spice_interface::loadSpiceKernelInTudat( input_output::getSpiceKernelPath( ) + "de-403-masses.tpc" );
-    spice_interface::loadSpiceKernelInTudat( input_output::getSpiceKernelPath( ) + "de421.bsp" );
-
+    spice_interface::loadStandardSpiceKernels( );
     // Get settings for Earth.
     std::map< std::string, boost::shared_ptr< BodySettings > > bodySettings;
     bodySettings[ "Earth" ] = getDefaultSingleBodySettings( "Earth", 0.0, 86400.0 );
@@ -624,11 +616,11 @@ BOOST_AUTO_TEST_CASE( test_aerodynamicAccelerationModelSetupWithCoefficientIndep
     {
         // Define body-fixed vehicle state.
         Eigen::Vector6d vehicleBodyFixedState =
-                ( Eigen::Vector6d( )<< -1656517.23153109, -5790058.28764025, -2440584.88186829,
+                ( Eigen::Vector6d( ) << -1656517.23153109, -5790058.28764025, -2440584.88186829,
                   6526.30784888051, -2661.34558272018, 2377.09572383163 ).finished( );
         if( i > 0 )
         {
-            vehicleBodyFixedState.segment( 3, 3 ) += ( Eigen::Vector3d( ) <<-3234.2, 2456.2, 33.245 ).finished( );
+            vehicleBodyFixedState.segment( 3, 3 ) += ( Eigen::Vector3d( ) << -3234.2, 2456.2, 33.245 ).finished( );
         }
 
         // Define vehicle inertial state.

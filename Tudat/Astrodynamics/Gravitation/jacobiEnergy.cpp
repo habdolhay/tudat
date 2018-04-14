@@ -1,4 +1,4 @@
-/*    Copyright (c) 2010-2017, Delft University of Technology
+/*    Copyright (c) 2010-2018, Delft University of Technology
  *    All rigths reserved
  *
  *    This file is part of the Tudat. Redistribution and use in source and
@@ -15,18 +15,19 @@
 #include <cmath>
 
 #include "Tudat/Astrodynamics/Gravitation/jacobiEnergy.h"
+#include "Tudat/Astrodynamics/BasicAstrodynamics/stateVectorIndices.h"
 
 namespace tudat
 {
 namespace gravitation
-{
-namespace circular_restricted_three_body_problem
 {
 
 //! Compute Jacobi energy.
 double computeJacobiEnergy( const double massParameter,
                             const Eigen::VectorXd& stateInNormalizedUnits )
 {
+    using namespace orbital_element_conversions;
+
     // Compute squared distances for efficient computation.
     const double xCoordinateToPrimaryBodySquared =
             ( massParameter + stateInNormalizedUnits( xCartesianPositionIndex ) )
@@ -55,6 +56,5 @@ double computeJacobiEnergy( const double massParameter,
             - stateInNormalizedUnits.segment( xCartesianVelocityIndex, 3 ).squaredNorm( );
 }
 
-} // namespace circular_restricted_three_body_problem
 } // namespace gravitation
 } // namespace tudat

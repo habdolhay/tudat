@@ -1,4 +1,4 @@
-/*    Copyright (c) 2010-2017, Delft University of Technology
+/*    Copyright (c) 2010-2018, Delft University of Technology
  *    All rigths reserved
  *
  *    This file is part of the Tudat. Redistribution and use in source and
@@ -17,14 +17,11 @@
 
 #include <Eigen/Core>
 
-#include "Tudat/Astrodynamics/Gravitation/stateDerivativeCircularRestrictedThreeBodyProblem.h"
-
 namespace tudat
 {
 namespace gravitation
 {
-namespace circular_restricted_three_body_problem
-{
+
 
 //! Compute Jacobi energy.
 /*!
@@ -45,7 +42,6 @@ namespace circular_restricted_three_body_problem
 double computeJacobiEnergy( const double massParameter,
                             const Eigen::VectorXd& stateInNormalizedUnits );
 
-} // namespace circular_restricted_three_body_problem
 } // namespace gravitation
 } // namespace tudat
 

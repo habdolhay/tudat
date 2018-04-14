@@ -1,4 +1,4 @@
-/*    Copyright (c) 2010-2017, Delft University of Technology
+/*    Copyright (c) 2010-2018, Delft University of Technology
  *    All rigths reserved
  *
  *    This file is part of the Tudat. Redistribution and use in source and
@@ -55,10 +55,7 @@ BOOST_AUTO_TEST_CASE( test_centralGravityEnvironmentUpdate )
     double finalTime = 2.0 * 86400.0;
 
     // Load Spice kernels
-    const std::string kernelsPath = input_output::getSpiceKernelPath( );
-    spice_interface::loadSpiceKernelInTudat( kernelsPath + "de-403-masses.tpc" );
-    spice_interface::loadSpiceKernelInTudat( kernelsPath + "de421.bsp" );
-    spice_interface::loadSpiceKernelInTudat( kernelsPath + "pck00009.tpc" );
+    spice_interface::loadStandardSpiceKernels( );
 
     // Get settings for celestial bodies
     std::map< std::string, boost::shared_ptr< BodySettings > > bodySettings;
@@ -133,7 +130,7 @@ BOOST_AUTO_TEST_CASE( test_centralGravityEnvironmentUpdate )
                         bodyMap, accelerationSettingsMap, centralBodies );
 
             // Create environment update settings.
-            boost::shared_ptr< PropagatorSettings< double > > propagatorSettings =
+            boost::shared_ptr< SingleArcPropagatorSettings< double > > propagatorSettings =
                     boost::make_shared< TranslationalStatePropagatorSettings< double > >(
                         centralBodyList, accelerationsMap, propagatedBodyList, getInitialStateOfBody(
                             "Moon", centralBodies[ "Moon" ], bodyMap, initialTime ), finalTime );
@@ -213,7 +210,7 @@ BOOST_AUTO_TEST_CASE( test_centralGravityEnvironmentUpdate )
                         bodyMap, accelerationSettingsMap, centralBodies );
 
             // Create environment update settings.
-            boost::shared_ptr< PropagatorSettings< double > > propagatorSettings =
+            boost::shared_ptr< SingleArcPropagatorSettings< double > > propagatorSettings =
                     boost::make_shared< TranslationalStatePropagatorSettings< double > >(
                         centralBodyList, accelerationsMap, propagatedBodyList, getInitialStateOfBody(
                             "Moon", centralBodies[ "Moon" ], bodyMap, initialTime ), finalTime );
@@ -271,7 +268,7 @@ BOOST_AUTO_TEST_CASE( test_centralGravityEnvironmentUpdate )
             accelerationSettingsMap[ "Moon" ][ "Sun" ].push_back(
                         boost::make_shared< AccelerationSettings >( central_gravity ) );
             accelerationSettingsMap[ "Moon" ][ "Earth" ].push_back(
-                        boost::make_shared< SphericalHarmonicAccelerationSettings >( 6, 6 ) );
+                        boost::make_shared< SphericalHarmonicAccelerationSettings >( 5, 5 ) );
             accelerationSettingsMap[ "Moon" ][ "Mars" ].push_back(
                         boost::make_shared< AccelerationSettings >( central_gravity ) );
 
@@ -285,7 +282,7 @@ BOOST_AUTO_TEST_CASE( test_centralGravityEnvironmentUpdate )
                         bodyMap, accelerationSettingsMap, centralBodies );
 
             // Create environment update settings.
-            boost::shared_ptr< PropagatorSettings< double > > propagatorSettings =
+            boost::shared_ptr< SingleArcPropagatorSettings< double > > propagatorSettings =
                     boost::make_shared< TranslationalStatePropagatorSettings< double > >(
                         centralBodyList, accelerationsMap, propagatedBodyList, getInitialStateOfBody(
                             "Moon", centralBodies[ "Moon" ], bodyMap, initialTime ), finalTime );
@@ -385,10 +382,7 @@ BOOST_AUTO_TEST_CASE( test_NonConservativeForceEnvironmentUpdate )
     using namespace tudat;
 
     // Load Spice kernels
-    const std::string kernelsPath = input_output::getSpiceKernelPath( );
-    spice_interface::loadSpiceKernelInTudat( kernelsPath + "de-403-masses.tpc" );
-    spice_interface::loadSpiceKernelInTudat( kernelsPath + "de421.bsp" );
-    spice_interface::loadSpiceKernelInTudat( kernelsPath + "pck00009.tpc" );
+    spice_interface::loadStandardSpiceKernels( );
 
     // Get settings for celestial bodies
     std::map< std::string, boost::shared_ptr< BodySettings > > bodySettings;
@@ -440,7 +434,7 @@ BOOST_AUTO_TEST_CASE( test_NonConservativeForceEnvironmentUpdate )
                     bodyMap, accelerationSettingsMap, centralBodies );
 
         // Create environment update settings.
-        boost::shared_ptr< PropagatorSettings< double > > propagatorSettings =
+        boost::shared_ptr< SingleArcPropagatorSettings< double > > propagatorSettings =
                 boost::make_shared< TranslationalStatePropagatorSettings< double > >(
                     centralBodyList, accelerationsMap, propagatedBodyList, getInitialStateOfBody(
                         "Vehicle", centralBodies[ "Vehicle" ], bodyMap, initialTime ), finalTime );
@@ -512,7 +506,7 @@ BOOST_AUTO_TEST_CASE( test_NonConservativeForceEnvironmentUpdate )
                     boost::lambda::constant( angleOfSideslip ),
                     boost::lambda::constant( bankAngle ) );
 
-        boost::shared_ptr< PropagatorSettings< double > > propagatorSettings =
+        boost::shared_ptr< SingleArcPropagatorSettings< double > > propagatorSettings =
                 boost::make_shared< TranslationalStatePropagatorSettings< double > >(
                     centralBodyList, accelerationsMap, propagatedBodyList, getInitialStateOfBody(
                         "Vehicle", centralBodies[ "Vehicle" ], bodyMap, initialTime ), finalTime );

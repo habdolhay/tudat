@@ -1,4 +1,4 @@
-/*    Copyright (c) 2010-2017, Delft University of Technology
+/*    Copyright (c) 2010-2018, Delft University of Technology
  *    All rigths reserved
  *
  *    This file is part of the Tudat. Redistribution and use in source and
@@ -23,7 +23,6 @@
 
 #include <boost/test/floating_point_comparison.hpp>
 #include <boost/test/unit_test.hpp>
-#include <boost/make_shared.hpp>
 
 #include <Eigen/Core>
 
@@ -154,8 +153,8 @@ BOOST_AUTO_TEST_CASE( test_GeodesyLegendrePolynomial )
                                              ).finished( );
 
     // Check if test values match expected values.
-    TUDAT_CHECK_MATRIX_CLOSE_FRACTION( expectedValues, computedTestValues, 1.0e-15 );
-    TUDAT_CHECK_MATRIX_CLOSE_FRACTION( expectedValues, computedTestValuesDirect, 1.0e-15 );
+    TUDAT_CHECK_MATRIX_CLOSE_FRACTION( expectedValues, computedTestValues, 2.0e-15 );
+    TUDAT_CHECK_MATRIX_CLOSE_FRACTION( expectedValues, computedTestValuesDirect, 2.0e-15 );
 
 }
 

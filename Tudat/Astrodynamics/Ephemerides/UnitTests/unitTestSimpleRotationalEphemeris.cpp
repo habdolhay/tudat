@@ -1,4 +1,4 @@
-/*    Copyright (c) 2010-2017, Delft University of Technology
+/*    Copyright (c) 2010-2018, Delft University of Technology
  *    All rigths reserved
  *
  *    This file is part of the Tudat. Redistribution and use in source and
@@ -7,7 +7,7 @@
  *    a copy of the license with this file. If not, please or visit:
  *    http://tudat.tudelft.nl/LICENSE.
  */
-  
+
 #define BOOST_TEST_MAIN
 
 #include <limits>
@@ -62,7 +62,7 @@ BOOST_AUTO_TEST_CASE( testSimpleRotationalEphemeris )
     SimpleRotationalEphemeris venusRotationalEphemerisFromAngles(
                 venusPoleRightAscension, venusPoleDeclination, venusPrimeMeridianAtJ2000,
                 venusRotationRate, 0.0, baseFrame, targetFrame );
-    SimpleRotationalEphemeris venusRotationalEphemerisFromInitialState(
+    tudat::ephemerides::SimpleRotationalEphemeris venusRotationalEphemerisFromInitialState(
                 initialRotationToTargetFrame,
                 venusRotationRate, 0.0, baseFrame, targetFrame );
 
@@ -239,6 +239,48 @@ BOOST_AUTO_TEST_CASE( testSimpleRotationalEphemeris )
                             ephemerisRotationDerivative( i, j ), 2.0E-16 );
             }
 
+        }
+    }
+
+    // Test computation of rotational velocity vector
+    {
+        Eigen::Vector3d spiceRotationalVelocityVectorInBaseFrame;
+        spiceRotationalVelocityVectorInBaseFrame << -5.593131603532092e-09, 1.160198999048488e-07, -2.75781861386115e-07;
+
+        // Set rotation at given time, as calculated with Spice (see above commented lines)
+        Eigen::Matrix3d spiceRotationMatrixToTargetFrame;
+        spiceRotationMatrixToTargetFrame << -0.8249537745726603, 0.5148010526833556, 0.2333048348715243,
+                -0.5648910720519699, -0.7646317780963481, -0.3102197940834743,
+                0.01869081416890206, -0.3877088083617987, 0.9215923900425707;
+
+        Eigen::Vector3d spiceRotationalVelocityVectorInTargetFrame =
+                spiceRotationMatrixToTargetFrame * spiceRotationalVelocityVectorInBaseFrame;
+
+        Eigen::Vector3d rotationalVelocityVectorInBaseFrame =
+                venusRotationalEphemerisFromAngles.getRotationalVelocityVectorInBaseFrame( secondsSinceJ2000 );
+        Eigen::Vector3d rotationalVelocityVectorInBaseFrame2 =
+                venusRotationalEphemerisFromInitialState.getRotationalVelocityVectorInBaseFrame( secondsSinceJ2000 );
+
+        Eigen::Vector3d rotationalVelocityVectorInTargetFrame =
+                venusRotationalEphemerisFromAngles.getRotationalVelocityVectorInTargetFrame( secondsSinceJ2000 );
+        Eigen::Vector3d rotationalVelocityVectorInTargetFrame2 =
+                venusRotationalEphemerisFromInitialState.getRotationalVelocityVectorInTargetFrame( secondsSinceJ2000 );
+
+        for( unsigned int i = 0; i < 3; i++ )
+        {
+            BOOST_CHECK_SMALL(
+                        std::fabs( rotationalVelocityVectorInBaseFrame( i ) -
+                                   spiceRotationalVelocityVectorInBaseFrame( i ) ), 1.0E-21 );
+            BOOST_CHECK_SMALL(
+                        std::fabs( rotationalVelocityVectorInBaseFrame2( i ) -
+                                   spiceRotationalVelocityVectorInBaseFrame( i ) ), 1.0E-21 );
+
+            BOOST_CHECK_SMALL(
+                        std::fabs( rotationalVelocityVectorInTargetFrame( i ) -
+                                   spiceRotationalVelocityVectorInTargetFrame( i ) ), 1.0E-21 );
+            BOOST_CHECK_SMALL(
+                        std::fabs( rotationalVelocityVectorInTargetFrame2( i ) -
+                                   spiceRotationalVelocityVectorInTargetFrame( i ) ), 1.0E-21 );
         }
     }
 

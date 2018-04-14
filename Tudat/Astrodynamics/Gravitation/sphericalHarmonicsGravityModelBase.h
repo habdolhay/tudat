@@ -1,4 +1,4 @@
-/*    Copyright (c) 2010-2017, Delft University of Technology
+/*    Copyright (c) 2010-2018, Delft University of Technology
  *    All rigths reserved
  *
  *    This file is part of the Tudat. Redistribution and use in source and
@@ -149,6 +149,16 @@ public:
     bool getIsMutualAttractionUsed( )
     {
         return isMutualAttractionUsed_;
+    }
+
+    //! Function to return the current gravitational paramter.
+    /*!
+     *  Function to return the current gravitational paramter. Must be called after updateBaseMembers( ).
+     * \return The value of the current gravitational parameter.
+     */
+    double getCurrentGravitationalParameter( )
+    {
+        return gravitationalParameter;
     }
 
     //! Function to return current position vector of body exerting gravitational acceleration in inertial frame.

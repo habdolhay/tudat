@@ -1,4 +1,4 @@
-/*    Copyright (c) 2010-2017, Delft University of Technology
+/*    Copyright (c) 2010-2018, Delft University of Technology
  *    All rigths reserved
  *
  *    This file is part of the Tudat. Redistribution and use in source and
@@ -50,9 +50,18 @@ std::string getAccelerationModelName( const AvailableAcceleration accelerationTy
     case thrust_acceleration:
         accelerationName = "thrust ";
         break;
+    case relativistic_correction_acceleration:
+        accelerationName  = "relativistic correction ";
+        break;
+    case empirical_acceleration:
+        accelerationName  = "empirical correction ";
+        break;
+    case direct_tidal_dissipation_acceleration:
+        accelerationName  = "direct tidal dissipation ";
+        break;
     default:
         std::string errorMessage = "Error, acceleration type " +
-                boost::lexical_cast< std::string >( accelerationType ) +
+                std::to_string( accelerationType ) +
                 "not found when retrieving acceleration name ";
         throw std::runtime_error( errorMessage );
     }
@@ -87,6 +96,16 @@ AvailableAcceleration getAccelerationModelType(
     {
         accelerationType = third_body_central_gravity;
     }
+    else if( boost::dynamic_pointer_cast< ThirdBodySphericalHarmonicsGravitationalAccelerationModel >(
+                 accelerationModel ) != NULL )
+    {
+        accelerationType = third_body_spherical_harmonic_gravity;
+    }
+    else if( boost::dynamic_pointer_cast< ThirdBodyMutualSphericalHarmonicsGravitationalAccelerationModel >(
+                 accelerationModel ) != NULL )
+    {
+        accelerationType = third_body_mutual_spherical_harmonic_gravity;
+    }
     else if( boost::dynamic_pointer_cast< SphericalHarmonicsGravitationalAccelerationModel >(
                  accelerationModel ) != NULL  )
     {
@@ -105,6 +124,19 @@ AvailableAcceleration getAccelerationModelType(
                  accelerationModel ) != NULL )
     {
         accelerationType = thrust_acceleration;
+    }
+    else if( boost::dynamic_pointer_cast< relativity::RelativisticAccelerationCorrection >(
+                 accelerationModel ) != NULL )
+    {
+        accelerationType = relativistic_correction_acceleration;
+    }
+    else if( boost::dynamic_pointer_cast< basic_astrodynamics::EmpiricalAcceleration >( accelerationModel ) != NULL )
+    {
+        accelerationType = empirical_acceleration;
+    }
+    else if( boost::dynamic_pointer_cast<  gravitation::DirectTidalDissipationAcceleration >( accelerationModel ) != NULL )
+    {
+        accelerationType = direct_tidal_dissipation_acceleration;
     }
     else
     {
@@ -130,8 +162,7 @@ AvailableMassRateModels getMassRateModelType(
     {
         massRateType = custom_mass_rate_model;
     }
-    else if( boost::dynamic_pointer_cast< propulsion::FromThrustMassRateModel >(
-                massRateModel ) != NULL )
+    else if( boost::dynamic_pointer_cast< propulsion::FromThrustMassRateModel >( massRateModel ) != NULL )
     {
         massRateType = from_thrust_mass_rate_model;
     }
@@ -157,6 +188,52 @@ std::vector< boost::shared_ptr< AccelerationModel3d > > getAccelerationModelsOfT
         }
     }
     return accelerationList;
+}
+
+//! Function to check whether an acceleration type is a direct gravitational acceleration
+bool isAccelerationDirectGravitational( const AvailableAcceleration accelerationType )
+{
+    bool accelerationIsDirectGravity = 0;
+    if( ( accelerationType == central_gravity ) ||
+            ( accelerationType == spherical_harmonic_gravity ) ||
+            ( accelerationType == mutual_spherical_harmonic_gravity ) )
+    {
+        accelerationIsDirectGravity = 1;
+    }
+
+    return accelerationIsDirectGravity;
+}
+
+//! Function to get the third-body counterpart of a direct gravitational acceleration type
+AvailableAcceleration getAssociatedThirdBodyAcceleration( const AvailableAcceleration accelerationType )
+{
+
+    AvailableAcceleration thirdBodyAccelerationType;
+    if( !isAccelerationDirectGravitational( accelerationType ) )
+    {
+        std::string errorMessage = "Error when getting third-body gravity type, requested type: " +
+                std::to_string( accelerationType ) + " is not a direct gravity acceleration";
+        throw std::runtime_error( errorMessage );
+    }
+    else if( accelerationType == central_gravity )
+    {
+        thirdBodyAccelerationType = third_body_central_gravity;
+    }
+    else if( accelerationType == spherical_harmonic_gravity )
+    {
+        thirdBodyAccelerationType = third_body_spherical_harmonic_gravity;
+    }
+    else if( accelerationType == mutual_spherical_harmonic_gravity )
+    {
+        thirdBodyAccelerationType = third_body_mutual_spherical_harmonic_gravity;
+    }
+    else
+    {        std::string errorMessage = "Error when getting thirdbody gravity type, requested type: " +
+                std::to_string( accelerationType ) + " is not recognized.";
+        throw std::runtime_error( errorMessage );
+
+    }
+    return thirdBodyAccelerationType;
 }
 
 } // namespace basic_astrodynamics

@@ -1,4 +1,4 @@
- #    Copyright (c) 2010-2017, Delft University of Technology
+ #    Copyright (c) 2010-2018, Delft University of Technology
  #    All rigths reserved
  #
  #    This file is part of the Tudat. Redistribution and use in source and
@@ -24,7 +24,6 @@ set(GRAVITATION_SOURCES
   "${SRCROOT}${GRAVITATIONDIR}/librationPoint.cpp"
   "${SRCROOT}${GRAVITATIONDIR}/sphericalHarmonicsGravityModel.cpp"
   "${SRCROOT}${GRAVITATIONDIR}/sphericalHarmonicsGravityField.cpp"
-  "${SRCROOT}${GRAVITATIONDIR}/stateDerivativeCircularRestrictedThreeBodyProblem.cpp"
   "${SRCROOT}${GRAVITATIONDIR}/thirdBodyPerturbation.cpp"
   "${SRCROOT}${GRAVITATIONDIR}/timeDependentSphericalHarmonicsGravityField.cpp"
   "${SRCROOT}${GRAVITATIONDIR}/unitConversionsCircularRestrictedThreeBodyProblem.cpp"
@@ -33,6 +32,8 @@ set(GRAVITATION_SOURCES
   "${SRCROOT}${GRAVITATIONDIR}/triAxialEllipsoidGravity.cpp"
   "${SRCROOT}${GRAVITATIONDIR}/tabulatedGravityFieldVariations.cpp"
   "${SRCROOT}${GRAVITATIONDIR}/mutualSphericalHarmonicGravityModel.cpp"
+  "${SRCROOT}${GRAVITATIONDIR}/secondDegreeGravitationalTorque.cpp"
+  "${SRCROOT}${GRAVITATIONDIR}/directTidalDissipationAcceleration.cpp"
 )
 
 # Set the header files.
@@ -49,7 +50,6 @@ set(GRAVITATION_HEADERS
   "${SRCROOT}${GRAVITATIONDIR}/sphericalHarmonicsGravityModel.h"
   "${SRCROOT}${GRAVITATIONDIR}/sphericalHarmonicsGravityModelBase.h"
   "${SRCROOT}${GRAVITATIONDIR}/sphericalHarmonicsGravityField.h"
-  "${SRCROOT}${GRAVITATIONDIR}/stateDerivativeCircularRestrictedThreeBodyProblem.h"
   "${SRCROOT}${GRAVITATIONDIR}/thirdBodyPerturbation.h"
   "${SRCROOT}${GRAVITATIONDIR}/timeDependentSphericalHarmonicsGravityField.h"
   "${SRCROOT}${GRAVITATIONDIR}/unitConversionsCircularRestrictedThreeBodyProblem.h"
@@ -57,6 +57,8 @@ set(GRAVITATION_HEADERS
   "${SRCROOT}${GRAVITATIONDIR}/triAxialEllipsoidGravity.h"
   "${SRCROOT}${GRAVITATIONDIR}/tabulatedGravityFieldVariations.h"
   "${SRCROOT}${GRAVITATIONDIR}/mutualSphericalHarmonicGravityModel.h"
+  "${SRCROOT}${GRAVITATIONDIR}/secondDegreeGravitationalTorque.h"
+  "${SRCROOT}${GRAVITATIONDIR}/directTidalDissipationAcceleration.h"
 )
 
 # Add static libraries.
@@ -88,10 +90,6 @@ add_executable(test_LibrationPoints "${SRCROOT}${GRAVITATIONDIR}/UnitTests/unitT
 setup_custom_test_program(test_LibrationPoints "${SRCROOT}${GRAVITATIONDIR}")
 target_link_libraries(test_LibrationPoints tudat_ephemerides tudat_root_finders tudat_gravitation tudat_basic_astrodynamics tudat_input_output ${Boost_LIBRARIES})
 
-add_executable(test_StateDerivativeRestrictedThreeBodyProblem "${SRCROOT}${GRAVITATIONDIR}/UnitTests/unitTestStateDerivativeCircularRestrictedThreeBodyProblem.cpp")
-setup_custom_test_program(test_StateDerivativeRestrictedThreeBodyProblem "${SRCROOT}${GRAVITATIONDIR}")
-target_link_libraries(test_StateDerivativeRestrictedThreeBodyProblem tudat_mission_segments tudat_root_finders tudat_gravitation tudat_basic_astrodynamics tudat_input_output ${Boost_LIBRARIES})
-
 add_executable(test_SphericalHarmonicsGravityModel "${SRCROOT}${GRAVITATIONDIR}/UnitTests/unitTestSphericalHarmonicsGravityModel.cpp")
 setup_custom_test_program(test_SphericalHarmonicsGravityModel "${SRCROOT}${GRAVITATIONDIR}")
 target_link_libraries(test_SphericalHarmonicsGravityModel tudat_gravitation tudat_basic_mathematics ${Boost_LIBRARIES} )
@@ -103,6 +101,10 @@ target_link_libraries(test_ThirdBodyPerturbation tudat_gravitation tudat_basic_m
 add_executable(test_TriAxialEllipsoidGravity "${SRCROOT}${GRAVITATIONDIR}/UnitTests/unitTestTriAxialEllipsoidGravity.cpp")
 setup_custom_test_program(test_TriAxialEllipsoidGravity "${SRCROOT}${GRAVITATIONDIR}")
 target_link_libraries(test_TriAxialEllipsoidGravity tudat_gravitation tudat_basic_mathematics ${Boost_LIBRARIES} )
+
+add_executable(test_DirectTidalDissipationAcceleration "${SRCROOT}${GRAVITATIONDIR}/UnitTests/unitTestDirectTidalDissipation.cpp")
+setup_custom_test_program(test_DirectTidalDissipationAcceleration "${SRCROOT}${GRAVITATIONDIR}")
+target_link_libraries(test_DirectTidalDissipationAcceleration ${TUDAT_PROPAGATION_LIBRARIES} ${Boost_LIBRARIES})
 
 if(USE_CSPICE)
 add_executable(test_GravityFieldVariations "${SRCROOT}${GRAVITATIONDIR}/UnitTests/unitTestGravityFieldVariations.cpp")
