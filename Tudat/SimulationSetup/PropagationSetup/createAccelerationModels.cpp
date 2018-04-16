@@ -1160,7 +1160,33 @@ boost::shared_ptr< gravitation::DirectTidalDissipationAcceleration > createDirec
                     tidalAccelerationSettings->includeDirectRadialComponent_);
     }
 }
+boost::shared_ptr< AsteroidRingGravitationalModel > createAsteroidRingAccelerationModel(
+        const boost::shared_ptr< Body > bodyUndergoingAcceleration,
+        const boost::shared_ptr< Body > bodyExertingAcceleration,
+        const std::string& nameOfBodyUndergoingAcceleration,
+        const std::string& nameOfBodyExertingAcceleration,
+        const std::string& nameOfCentralBody)
+{
+    std::cout << "Acceleration on " <<nameOfBodyUndergoingAcceleration << "From " << nameOfBodyExertingAcceleration << "wrt " << nameOfCentralBody << std::endl;
+    std::cout << "Position of " <<  bodyExertingAcceleration->getPosition() << std::endl;
 
+    if (bodyExertingAcceleration->getBodyMass() == NULL)
+    {
+        throw std::runtime_error( "Error when getting Mass of the asteroid Ring " +
+                                  nameOfBodyExertingAcceleration + " has no Mass" );
+    }
+
+    if (nameOfCentralBody != "SSB")
+    {
+        std::cerr << "Error: The central body for  " << nameOfBodyUndergoingAcceleration << " is " <<
+                                  nameOfCentralBody << " which is not SSB - At the moment, it might result in funny acceleration values!" << std::endl;
+    }
+
+    return boost::make_shared <AsteroidRingGravitationalModel> (
+                boost::bind( &Body::getPosition, bodyUndergoingAcceleration ),
+                boost::bind( &Body::getPosition, bodyExertingAcceleration ),
+                boost::bind( &Body::getBodyMass, bodyExertingAcceleration));
+}
 //! Function to create acceleration model object.
 boost::shared_ptr< AccelerationModel< Eigen::Vector3d > > createAccelerationModel(
         const boost::shared_ptr< Body > bodyUndergoingAcceleration,
@@ -1238,6 +1264,14 @@ boost::shared_ptr< AccelerationModel< Eigen::Vector3d > > createAccelerationMode
                     nameOfBodyUndergoingAcceleration,
                     nameOfBodyExertingAcceleration,
                     accelerationSettings );
+        break;
+    case asteroid_ring_model:
+        accelerationModelPointer = createAsteroidRingAccelerationModel(
+                    bodyUndergoingAcceleration,
+                    bodyExertingAcceleration,
+                    nameOfBodyUndergoingAcceleration,
+                    nameOfBodyExertingAcceleration,
+                    nameOfCentralBody);
         break;
     default:
         throw std::runtime_error(

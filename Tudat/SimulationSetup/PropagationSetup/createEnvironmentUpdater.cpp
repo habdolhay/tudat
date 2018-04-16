@@ -369,6 +369,8 @@ createTranslationalEquationsOfMotionEnvironmentUpdaterSettings(
                     break;
                 case empirical_acceleration:
                     break;
+                case asteroid_ring_model:
+                    break;
                 default:
                     throw std::runtime_error( std::string( "Error when setting acceleration model update needs, model type not recognized: " ) +
                                               std::to_string( currentAccelerationModelType ) );

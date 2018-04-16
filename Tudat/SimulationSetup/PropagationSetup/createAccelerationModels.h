@@ -24,6 +24,7 @@
 #include "Tudat/Astrodynamics/BasicAstrodynamics/empiricalAcceleration.h"
 #include "Tudat/Astrodynamics/Ephemerides/frameManager.h"
 #include "Tudat/Astrodynamics/Gravitation/directTidalDissipationAcceleration.h"
+#include "Tudat/Astrodynamics/Gravitation/asteroidRingAccelerationModel.h"
 
 namespace tudat
 {
@@ -450,6 +451,11 @@ basic_astrodynamics::AccelerationMap createAccelerationModelsMap(
         const std::vector< std::string >& propagatedBodies,
         const std::vector< std::string >& centralBodies );
 
+boost::shared_ptr< gravitation::AsteroidRingGravitationalModel > createAsteroidRingAccelerationModel(const boost::shared_ptr< Body > bodyUndergoingAcceleration,
+        const boost::shared_ptr< Body > bodyExertingAcceleration,
+        const std::string& nameOfBodyUndergoingAcceleration,
+        const std::string& nameOfBodyExertingAcceleration,
+        const std::string& nameOfCentralBody);
 
 } // namespace simulation_setup
 
