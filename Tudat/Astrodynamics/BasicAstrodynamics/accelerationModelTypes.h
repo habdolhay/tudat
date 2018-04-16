@@ -26,6 +26,7 @@
 #include "Tudat/Astrodynamics/Relativity/relativisticAccelerationCorrection.h"
 #include "Tudat/Astrodynamics/BasicAstrodynamics/empiricalAcceleration.h"
 #include "Tudat/Astrodynamics/Propulsion/massRateFromThrust.h"
+#include "Tudat/Astrodynamics/Gravitation/asteroidRingAccelerationModel.h"
 
 namespace tudat
 {
@@ -56,7 +57,8 @@ enum AvailableAcceleration
     thrust_acceleration,
     relativistic_correction_acceleration,
     empirical_acceleration,
-    direct_tidal_dissipation_acceleration
+    direct_tidal_dissipation_acceleration,
+    asteroid_ring_model
 };
 
 //! Function to get a string representing a 'named identification' of an acceleration type

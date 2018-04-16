@@ -59,6 +59,9 @@ std::string getAccelerationModelName( const AvailableAcceleration accelerationTy
     case direct_tidal_dissipation_acceleration:
         accelerationName  = "direct tidal dissipation ";
         break;
+    case asteroid_ring_model:
+        accelerationName  = "asteroid ring model ";
+        break;
     default:
         std::string errorMessage = "Error, acceleration type " +
                 std::to_string( accelerationType ) +
@@ -137,6 +140,10 @@ AvailableAcceleration getAccelerationModelType(
     else if( boost::dynamic_pointer_cast<  gravitation::DirectTidalDissipationAcceleration >( accelerationModel ) != NULL )
     {
         accelerationType = direct_tidal_dissipation_acceleration;
+    }
+    else if( boost::dynamic_pointer_cast<  AsteroidRingGravitationalModel  >( accelerationModel ) != NULL )
+    {
+        accelerationType = asteroid_ring_model;
     }
     else
     {
