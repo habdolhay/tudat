@@ -1167,8 +1167,9 @@ boost::shared_ptr< AsteroidRingGravitationalModel > createAsteroidRingAccelerati
         const std::string& nameOfBodyExertingAcceleration,
         const std::string& nameOfCentralBody)
 {
-    std::cout << "Acceleration on " <<nameOfBodyUndergoingAcceleration << "From " << nameOfBodyExertingAcceleration << "wrt " << nameOfCentralBody << std::endl;
-    std::cout << "Position of " <<  bodyExertingAcceleration->getPosition() << std::endl;
+    std::string frameOrigin = bodyUndergoingAcceleration->getEphemeris()->getReferenceFrameOrigin();
+    std::string frameOrientation =bodyUndergoingAcceleration->getEphemeris()->getReferenceFrameOrientation();
+
 
     if (bodyExertingAcceleration->getBodyMass() == NULL)
     {
@@ -1176,16 +1177,23 @@ boost::shared_ptr< AsteroidRingGravitationalModel > createAsteroidRingAccelerati
                                   nameOfBodyExertingAcceleration + " has no Mass" );
     }
 
-    if (nameOfCentralBody != "SSB")
+    if (frameOrigin != "SSB")
     {
-        std::cerr << "Error: The central body for  " << nameOfBodyUndergoingAcceleration << " is " <<
-                                  nameOfCentralBody << " which is not SSB - At the moment, it might result in funny acceleration values!" << std::endl;
+        std::cerr << "Warring: " << nameOfBodyUndergoingAcceleration << " ephemeris origin is not SSB, it is " <<
+                                  frameOrigin << "" << std::endl;
+    }
+
+    if (frameOrientation != "ECLIPJ2000")
+    {
+        std::cerr << "Warring: " << nameOfBodyUndergoingAcceleration << " ephemeris orientation is not ECLIPJ2000, instead it is " <<
+                                  frameOrientation << "" << std::endl;
     }
 
     return boost::make_shared <AsteroidRingGravitationalModel> (
                 boost::bind( &Body::getPosition, bodyUndergoingAcceleration ),
-                boost::bind( &Body::getPosition, bodyExertingAcceleration ),
-                boost::bind( &Body::getBodyMass, bodyExertingAcceleration));
+                boost::bind( &Body::getBodyMass, bodyExertingAcceleration),
+                frameOrigin,
+                frameOrientation);
 }
 //! Function to create acceleration model object.
 boost::shared_ptr< AccelerationModel< Eigen::Vector3d > > createAccelerationModel(
