@@ -29,8 +29,9 @@ namespace gravitation
 
 Eigen::Vector3d computeAsteroidRingAcceleration(
        const Eigen::Vector3d& positionOfBodySubjectToAcceleration,
-       const Eigen::Vector3d& positionOfBodyExertingAcceleration,
-       const double& ringMass );
+       const double& ringMass,
+       std::string& frameOrigin,
+       std::string& frameOrientation);
 
 
 //template< typename StateMatrix = Eigen::Vector3d >
@@ -48,12 +49,14 @@ private:
 public:
         AsteroidRingGravitationalModel(
                 const Vector3dReturningFunction positionOfBodySubjectToAccelerationFunction,
-                const Vector3dReturningFunction positionOfBodyExertingAccelerationFunction,
-                const DoubleReturningFunction ringMassFunction)
+                const DoubleReturningFunction ringMassFunction,
+                std::string frameOrigin,
+                std::string frameOrientation)
 
-            : positionOfBodyExertingAccelerationFunction_(positionOfBodyExertingAccelerationFunction),
-              positionOfBodySubjectToAccelerationFunction_(positionOfBodySubjectToAccelerationFunction),
-              ringMassFunction_(ringMassFunction)
+            : positionOfBodySubjectToAccelerationFunction_(positionOfBodySubjectToAccelerationFunction),
+              ringMassFunction_(ringMassFunction),
+              frameOrigin_(frameOrigin),
+              frameOrientation_(frameOrientation)
 //              positionOfCentralBodyFunction_(positionOfCentralBodyFunction)
 
 
@@ -71,9 +74,10 @@ public:
         Eigen::Vector3d getAcceleration( )
         {
             return computeAsteroidRingAcceleration(
-                        positionOfBodyExertingAcceleration_,
                         positionOfBodySubjectToAcceleration_,
-                        ringMass_);
+                        ringMass_,
+                        frameOrigin_,
+                        frameOrientation_);
         }
 
         //! Update members.
@@ -88,12 +92,12 @@ public:
             if( !( this->currentTime_ == currentTime ) )
             {
 
-                positionOfBodyExertingAcceleration_ = this->positionOfBodyExertingAccelerationFunction_();
+
                 positionOfBodySubjectToAcceleration_ = this->positionOfBodySubjectToAccelerationFunction_();
                 ringMass_ = this->ringMassFunction_();
 
 
-                currentTime_ = currentTime;
+                //currentTime_ = currentTime;
 
             }
         }
@@ -101,14 +105,15 @@ public:
 private:
 
       Vector3dReturningFunction positionOfBodySubjectToAccelerationFunction_;
-      Vector3dReturningFunction positionOfBodyExertingAccelerationFunction_;
       DoubleReturningFunction ringMassFunction_;
 //      Vector3dReturningFunction positionOfCentralBodyFunction_;
 
 
-      Eigen::Vector3d positionOfBodyExertingAcceleration_;
+
       Eigen::Vector3d positionOfBodySubjectToAcceleration_;
       double ringMass_;
+      std::string frameOrigin_;
+      std::string frameOrientation_;
 //      Eigen::Vector3d positionOfCentralBody_;
 
 
