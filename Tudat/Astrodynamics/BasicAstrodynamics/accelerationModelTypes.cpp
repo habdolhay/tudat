@@ -58,7 +58,7 @@ std::string getAccelerationModelName( const AvailableAcceleration accelerationTy
         break;
     case direct_tidal_dissipation_acceleration:
         accelerationName  = "direct tidal dissipation ";
-        break;    
+        break;
     case asteroid_ring_model:
         accelerationName  = "asteroid ring model ";
         break;
@@ -141,12 +141,10 @@ AvailableAcceleration getAccelerationModelType(
     {
         accelerationType = direct_tidal_dissipation_acceleration;
     }
-    
     else if( boost::dynamic_pointer_cast<  AsteroidRingGravitationalModel  >( accelerationModel ) != NULL )
     {
         accelerationType = asteroid_ring_model;
     }
-    
     else
     {
         throw std::runtime_error(
